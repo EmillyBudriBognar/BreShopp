@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🛍️ Breshopp - Marketplace Sustentável
 
-## Getting Started
+Projeto Integrador do curso superior de **Desenvolvimento de Software Multiplataforma** (DSM) - FATEC Luigi Papaiz.
 
-First, run the development server:
+## 🌱 Sobre o projeto
+
+**BreShopp** é um marketplace dedicado a brechós, ONGs e vendedores independentes, com o propósito de **promover o consumo consciente** e **dar visibilidade a causas sociais**.
+
+A plataforma conecta quem deseja vender ou doar roupas com quem busca consumir de forma sustentável, alinhando impacto social, econômico e ambiental.
+
+Nosso projeto tem como **base os Objetivos de Desenvolvimento Sustentável (ODS)** da ONU:
+
+- **ODS 8** – Trabalho decente e crescimento econômico  
+- **ODS 11** – Cidades e comunidades sustentáveis  
+- **ODS 12** – Consumo e produção responsáveis  
+
+## 💡 Funcionalidades previstas
+
+- Cadastro de vendedores independentes, brechós e ONGs
+- Cadastro e exibição de produtos de segunda mão
+- Sistema de recompensas por doação
+- Visibilidade para causas sociais por meio de campanhas no app
+
+## 🛠️ Tecnologias utilizadas
+
+### Front-end:
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+### Back-end:
+- [PHP](https://www.php.net/)
+
+### Ferramentas e práticas:
+- Git e GitHub para versionamento e colaboração
+- Figma para prototipação da interface
+- Responsividade e acessibilidade como prioridade
+
+## 👨‍💻 Equipe de desenvolvimento
+
+Este projeto foi desenvolvido por estudantes do curso de DSM:
+
+- **Emilly Budri Bognar**
+- **Gabriel de Moura**
+- **Íris Oliveira Santos**
+- **Johnny da Silva Franco de Lima**
+- **Laura Cristini da Silva**
+- **Stela dos Santos Montenegro**
+
+## 📦 Como rodar o projeto localmente
+
+### Pré-requisitos:
+- Node.js (versão recomendada: LTS)
+- npm ou yarn
+- PHP (para o back-end)
+
+### Passos para o front-end:
 
 ```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/Site-BreShopp.git
+
+# Acesse a pasta do projeto
+cd breshopp
+
+# Instale as dependências
+npm install
+# ou
+yarn install
+
+# Execute o projeto
 npm run dev
-# or
+# ou
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Licença
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Este projeto é um software educacional de código aberto desenvolvido para fins acadêmicos e sociais. Licenciado sob a **MIT License**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> _"Moda consciente é um ato de amor — pelo planeta, pelas pessoas e por você."_ 💚
