@@ -1,129 +1,150 @@
-import { useEffect, useRef, useState } from "react";
-import ActionButton from "./ActionButton";
-import { goToCategorias } from "./Navigation";
+'use client';
 
-function useInView(options) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        if (options?.delay) {
-          setTimeout(() => setIsVisible(true), options.delay);
-        } else {
-          setIsVisible(true);
-        }
-        observer.unobserve(entry.target);
-      }
-    }, options);
-
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [options]);
-
-  return { ref, isVisible };
-}
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { Shirt, StretchHorizontal, Watch, Footprints } from 'lucide-react';
+import ActionButton from '@/components/ActionButton';
 
 const FeaturedProducts = () => {
-  const title = useInView({ threshold: 0.1 });
-  const subtitle = useInView({ threshold: 0.1, delay: 150 });
-  const tag = useInView({ threshold: 0.1, delay: 50 });
-  const grid = useInView({ threshold: 0.1, delay: 200 });
-  const button = useInView({ threshold: 0.1, delay: 250 });
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, {
+    once: true,
+    margin: '-100px 0px -100px 0px',
+    amount: 0.2
+  });
 
   const categories = [
-    { id: 1, name: "Camisas", slug: "camisas", short: "Camisas" },
-    { id: 2, name: "Calças", slug: "calcas", short: "Calças" },
-    { id: 3, name: "Acessórios", slug: "acessorios", short: "Acessórios" },
-    { id: 4, name: "Tênis", slug: "tenis", short: "Tênis" },
+    { 
+      id: 1, 
+      name: "Camisas", 
+      slug: "camisas", 
+      icon: <Shirt size={36} strokeWidth={1.5} />,
+      color: "bg-blue-100"
+    },
+    { 
+      id: 2, 
+      name: "Calças", 
+      slug: "calcas", 
+      icon: <StretchHorizontal size={36} strokeWidth={1.5} />,
+      color: "bg-pink-100" 
+    },
+    { 
+      id: 3, 
+      name: "Acessórios", 
+      slug: "acessorios", 
+      icon: <Watch size={36} strokeWidth={1.5} />,
+      color: "bg-green-100" 
+    },
+    { 
+      id: 4, 
+      name: "Tênis", 
+      slug: "tenis", 
+      icon: <Footprints size={36} strokeWidth={1.5} />,
+      color: "bg-purple-100" 
+    },
   ];
 
-  return (
-    <section className="bg-custom-cream py-20 px-4 md:px-8 lg:px-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        {/* Título */}
-        <div className="text-center mb-16">
-          <div
-            ref={tag.ref}
-            className={`inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-custom-green uppercase rounded-full bg-emerald-200 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-              tag.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            Coleções
-          </div>
-          <h2
-            ref={title.ref}
-            className={`text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-4 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-              title.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            }`}
-          >
-            Categorias que amamos{" "}
-            <span
-              className={`inline-block transition-all duration-500 ease-in ${
-                title.isVisible ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-45"
-              }`}
-            >
-              💖
-            </span>
-          </h2>
-          <p
-            ref={subtitle.ref}
-            className={`text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed transition-all duration-700 ease-out ${
-              subtitle.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            Estilo, propósito e personalidade. Descubra peças que contam sua história.
-          </p>
-        </div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
 
-        {/* Grid de categorias */}
-        <div
-          ref={grid.ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 90,
+        damping: 18
+      }
+    }
+  };
+
+  return (
+    <motion.section
+      ref={containerRef}
+      className="bg-custom-cream py-20 px-4 md:px-8 lg:px-12 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={containerVariants}
         >
-          {categories.map((cat, index) => (
-            <a
+          <motion.span
+            variants={itemVariants}
+            className="inline-block px-4 py-1 mb-4 text-xs font-bold tracking-widest text-custom-green uppercase rounded-full bg-emerald-100"
+          >
+            Coleções em destaque
+          </motion.span>
+          <motion.h2
+            variants={itemVariants}
+            className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4"
+          >
+            Categorias que amamos 💖
+          </motion.h2>
+          <motion.p
+            variants={itemVariants}
+            className="text-gray-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+          >
+            Estilo, propósito e personalidade. Encontre peças que contam a sua história.
+          </motion.p>
+        </motion.div>
+
+        {/* Cards */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={containerVariants}
+        >
+          {categories.map((cat) => (
+            <motion.a
               key={cat.id}
               href={`/categorias/${cat.slug}`}
-              aria-label={`Ver categoria ${cat.short}`}
-              className={`relative group rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 ease-in-out h-64 flex flex-col transform ${
-                grid.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-              style={{
-                transitionDelay: grid.isVisible ? `${index * 100 + 200}ms` : "0ms",
-              }}
+              aria-label={`Ver categoria ${cat.name}`}
+              className={`group relative ${cat.color} rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-64 flex flex-col items-center justify-center text-center`}
+              variants={itemVariants}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              <div className="relative z-10 flex flex-col justify-center items-center text-white text-lg font-semibold">
-                <span className="mb-4">{cat.name}</span>
-                <span className="text-sm">{cat.short}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent z-0" />
+              <div className="relative z-10 flex flex-col items-center justify-center p-6">
+                <div className="text-gray-800 mb-4">{cat.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-800">{cat.name}</h3>
+                <span className="text-sm text-gray-800/90 mt-1">Ver mais</span>
               </div>
-            </a>
+            </motion.a>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Botão para explorar categorias */}
-        <div
-          ref={button.ref}
-          className={`text-center mt-16 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-            button.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
+        {/* CTA */}
+        <motion.div
+          className="text-center mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5 }}
         >
           <ActionButton
-            text="Explorar todas as categorias →"
-            onClick={goToCategorias}
+            text="Explorar todas as categorias"
+            onClick={() => window.location.href = '/categorias'}
             variant="solid"
+            icon="arrow"
+            className="mx-auto"
           />
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

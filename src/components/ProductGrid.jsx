@@ -1,112 +1,131 @@
-import { useEffect, useRef, useState } from 'react';
-import ProductCard from './ProductCard';
-import ActionButton from './ActionButton';
+'use client';
 
-function useInView({ threshold }) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import ProductCard from '@/components/ProductCard';
+import ActionButton from '@/components/ActionButton';
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold }
-    );
+const ProductGrid = ({ products = [] }) => {
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, {
+    once: true,
+    margin: '-100px 0px -100px 0px',
+    amount: 0.2
+  });
 
-    const currentRef = ref.current;
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
       }
-    };
-  }, [threshold]);
+    }
+  };
 
-  return { ref, isVisible };
-}
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 90,
+        damping: 18
+      }
+    }
+  };
 
-const ProductGrid = ({ products }) => {
-  const tag = useInView({ threshold: 0.1 });
-  const title = useInView({ threshold: 0.1 });
-  const subtitle = useInView({ threshold: 0.1 });
-  const grid = useInView({ threshold: 0.1 });
-  const button = useInView({ threshold: 0.1 });
+  const fadeUp = (delay = 0) => ({
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 90,
+        damping: 18,
+        delay
+      }
+    }
+  });
 
   return (
-    <section className="py-12 bg-custom-cream overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <span
-            ref={tag.ref}
-            className={`inline-block text-2xl font-semibold text-custom-pink transition-all duration-500 ease-out ${
-              tag.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-            style={{ transitionDelay: `${tag.isVisible ? '300ms' : '0ms'}` }}
-          >
-            Our Collection
-          </span>
-
-          <h2
-            ref={title.ref}
-            className={`text-4xl font-bold text-custom-green mt-4 transition-all duration-500 ease-out ${
-              title.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-            style={{ transitionDelay: `${title.isVisible ? '400ms' : '0ms'}` }}
-          >
-            Exclusive Fashion Items
-          </h2>
-
-          <p
-            ref={subtitle.ref}
-            className={`text-lg text-custom-green/80 mt-4 transition-all duration-500 ease-out ${
-              subtitle.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-            style={{ transitionDelay: `${subtitle.isVisible ? '500ms' : '0ms'}` }}
-          >
-            Discover unique pieces that tell a story and reduce the impact of fast fashion.
-          </p>
-        </div>
-
-        <div
-          ref={grid.ref}
-          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8 transition-all duration-500 ease-out ${
-            grid.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+    <motion.section
+      ref={containerRef}
+      className="py-20 bg-custom-cream overflow-hidden px-4 sm:px-8 lg:px-12"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={containerVariants}
         >
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              className={`transition-all duration-500 ease-out ${
-                grid.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-              style={{
-                transitionDelay: grid.isVisible ? `${index * 100 + 300}ms` : '0ms',
-              }}
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
+          <motion.span
+            variants={itemVariants}
+            className="inline-block text-xs sm:text-sm font-bold uppercase tracking-wide text-custom-pink bg-pink-100 px-4 py-1 rounded-full"
+          >
+            Destaques
+          </motion.span>
+          <motion.h2
+            variants={itemVariants}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-custom-green mt-4"
+          >
+            Peças em Destaque ✨
+          </motion.h2>
+          <motion.p
+            variants={itemVariants}
+            className="text-base sm:text-lg text-custom-green/80 mt-4 max-w-2xl mx-auto"
+          >
+            Estilo único, propósito sustentável. Veja nossas escolhas favoritas.
+          </motion.p>
+        </motion.div>
 
-        <div
-          ref={button.ref}
-          className={`mt-12 text-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-            button.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+        {/* Grid */}
+        {products.length > 0 ? (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            variants={containerVariants}
+          >
+            {products.map((product, index) => (
+              <motion.div
+                key={product.id}
+                variants={fadeUp(index * 0.1)}
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-custom-green/80">Nenhum produto disponível no momento</p>
+          </div>
+        )}
+
+        {/* CTA */}
+        <motion.div
+          className="text-center mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5 }}
         >
           <ActionButton
-            text="Ver todas as peças →"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            text="Ver todas as peças"
+            onClick={() => (window.location.href = '/categorias')}
             variant="solid"
+            icon="arrow"
+            className="mx-auto"
           />
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

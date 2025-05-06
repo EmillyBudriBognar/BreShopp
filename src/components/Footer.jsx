@@ -1,141 +1,111 @@
-import React, { useRef, useEffect, useState } from 'react';
-
-function useInView(options) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        if (options?.delay) {
-          setTimeout(() => setIsVisible(true), options.delay);
-        } else {
-          setIsVisible(true);
-        }
-        observer.unobserve(entry.target);
-      }
-    }, options);
-
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [options]);
-
-  return { ref, isVisible };
-}
+import React from 'react';
+import { motion, useInView } from 'framer-motion';
 
 const Footer = () => {
-  const col1 = useInView({ threshold: 0.1, delay: 100 });
-  const col2 = useInView({ threshold: 0.1, delay: 200 });
-  const col3 = useInView({ threshold: 0.1, delay: 300 });
-  const col4 = useInView({ threshold: 0.1, delay: 400 });
-  const bottom = useInView({ threshold: 0.1, delay: 500 });
+  const containerRef = React.useRef(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+
+  const columns = [
+    {
+      title: null,
+      content: (
+        <>
+          <img
+            src="/assets/logo/logotipo-all-white.svg"
+            alt="BreShopp - Moda Sustentável"
+            className="w-32 mb-4 h-auto"
+          />
+          <p className="text-sm md:text-base text-white/80">
+            O BreShopp é um marketplace dedicado à moda sustentável. Conecte-se a brechós e encontre peças únicas.
+          </p>
+        </>
+      )
+    },
+    {
+      title: 'Navegação',
+      links: ['Home', 'Brechós', 'Roupas', 'Doar', 'Sobre', 'Contato']
+    },
+    {
+      title: 'Informações',
+      links: ['Termos de uso', 'Política de privacidade', 'Trocas e devoluções', 'Perguntas frequentes']
+    },
+    {
+      title: 'Redes Sociais',
+      links: ['Instagram', 'Facebook', 'Twitter', 'Pinterest']
+    }
+  ];
+
+  const columnVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: i => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.6,
+        ease: 'easeOut'
+      }
+    })
+  };
 
   return (
-    <footer className="bg-custom-green text-white py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Coluna 1: Logo + descrição */}
-          <div
-            ref={col1.ref}
-            className={`transition-all duration-700 ease-out ${
-              col1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-          >
-            <img
-              src="/assets/logo/logotipo-all-white.svg"
-              alt="BreShopp - Moda Sustentável"
-              className="w-32 mb-4"
-            />
-            <p>
-              A BreShopp é um marketplace dedicado à moda sustentável. Conecte-se a brechós e encontre peças únicas.
-            </p>
-            <div className="mt-4 space-x-4">
-              {['facebook', 'instagram', 'twitter', 'pinterest'].map((social) => (
-                <a key={social} href="#" className="hover:text-custom-olive transition">
-                  <span className="sr-only">{social}</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" />
-                </a>
-              ))}
-            </div>
-          </div>
+    <footer
+      ref={containerRef}
+      className="bg-custom-green text-white py-12 px-4 sm:px-6 lg:px-8"
+      aria-labelledby="footer-heading"
+    >
+      <div className="mx-auto max-w-7xl">
+        <h2 id="footer-heading" className="sr-only">Rodapé</h2>
 
-          {/* Coluna 2: Navegação */}
-          <div
-            ref={col2.ref}
-            className={`transition-all duration-700 ease-out ${
-              col2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-          >
-            <h4 className="font-bold mb-4">Navegação</h4>
-            <ul className="space-y-2">
-              {['Home', 'Brechós', 'Roupas', 'Doar', 'Sobre', 'Contato'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="hover:text-custom-olive transition">{item}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {columns.map((column, index) => (
+            <motion.div
+              key={index}
+              custom={index}
+              initial="hidden"
+              animate={isInView ? 'visible' : 'hidden'}
+              variants={columnVariants}
+              className="space-y-4"
+            >
+              {column.title && (
+                <h3 className="text-lg font-semibold tracking-tight">
+                  {column.title}
+                </h3>
+              )}
 
-          {/* Coluna 3: Informações */}
-          <div
-            ref={col3.ref}
-            className={`transition-all duration-700 ease-out ${
-              col3.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-          >
-            <h4 className="font-bold mb-4">Informações</h4>
-            <ul className="space-y-2">
-              {['Termos de uso', 'Política de privacidade', 'Trocas e devoluções', 'Perguntas frequentes'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="hover:text-custom-olive transition">{item}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Coluna 4: Newsletter */}
-          <div
-            ref={col4.ref}
-            className={`transition-all duration-700 ease-out ${
-              col4.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-          >
-            <h4 className="font-bold mb-4">Newsletter</h4>
-            <p className="mb-4">
-              Assine para receber novidades e promoções.
-            </p>
-            <form className="flex">
-              <input
-                type="email"
-                placeholder="Seu e-mail"
-                className="px-4 py-2 w-full rounded-l text-custom-green focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="bg-custom-pink px-4 py-2 rounded-r hover:bg-opacity-90 transition"
-              >
-                Assinar
-              </button>
-            </form>
-          </div>
+              {column.links ? (
+                <ul className="space-y-2">
+                  {column.links.map((link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="text-sm md:text-base text-white/80 hover:text-custom-olive transition-colors duration-300 cursor-pointer"
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                column.content
+              )}
+            </motion.div>
+          ))}
         </div>
 
-        {/* Rodapé final */}
-        <div
-          ref={bottom.ref}
-          className={`border-t border-custom-olive border-opacity-30 mt-8 pt-8 text-center transition-all duration-700 ease-out ${
-            bottom.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="border-t border-custom-olive/30 mt-12 pt-8 text-center"
         >
-          <p>© 2025 BreShopp. Todos os direitos reservados.</p>
-          <p className="mt-2 text-sm">Site desenvolvido com ♥ para um futuro mais sustentável</p>
-        </div>
+          <p className="text-sm md:text-base text-white/80">
+            © 2025 BreShopp. Todos os direitos reservados.
+          </p>
+          <p className="mt-2 text-xs md:text-sm text-white/60">
+            Site desenvolvido com ♥ para um futuro mais sustentável
+          </p>
+        </motion.div>
       </div>
     </footer>
   );

@@ -6,7 +6,7 @@ const ImpactBanner = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}  
       transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-      className="bg-[#7f5e1030] bg-opacity-20 text-custom-green py-4"
+      className="bg-[#E7E1D2] text-custom-green py-4"
     >
       <div className="container mx-auto px-4 text-center">
         <p className="font-medium">
