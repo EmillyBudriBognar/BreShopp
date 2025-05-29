@@ -8,11 +8,12 @@ import Hero from '../components/Hero';
 import FeaturesSection from '../components/FeaturesSection';
 import FeaturedProducts from '../components/FeaturedProducts';
 import UpcyclingSaleBanner from '../components/UpcyclingSaleBanner';
-import ProductGrid from '../components/ProductGrid';
+import ProductGrid from '../components/DonationCarousel';
 import AppPromoSection from '../components/AppPromoSection';
 import DonationSection from '../components/DonationSection';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+
 
 const Home = () => {
   const featuredProducts = [

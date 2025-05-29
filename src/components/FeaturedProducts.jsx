@@ -1,58 +1,17 @@
-'use client';
-
-import { useRef } from 'react';
+import React from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Shirt, StretchHorizontal, Watch, Footprints } from 'lucide-react';
-import ActionButton from '@/components/ActionButton';
+import { Leaf, ArrowRight, Recycle, Globe } from 'lucide-react';
 
-const FeaturedProducts = () => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, {
-    once: true,
-    margin: '-100px 0px -100px 0px',
-    amount: 0.2
-  });
-
-  const categories = [
-    { 
-      id: 1, 
-      name: "Camisas", 
-      slug: "camisas", 
-      icon: <Shirt size={36} strokeWidth={1.5} />,
-      color: "bg-blue-100"
-    },
-    { 
-      id: 2, 
-      name: "Calças", 
-      slug: "calcas", 
-      icon: <StretchHorizontal size={36} strokeWidth={1.5} />,
-      color: "bg-pink-100" 
-    },
-    { 
-      id: 3, 
-      name: "Acessórios", 
-      slug: "acessorios", 
-      icon: <Watch size={36} strokeWidth={1.5} />,
-      color: "bg-green-100" 
-    },
-    { 
-      id: 4, 
-      name: "Tênis", 
-      slug: "tenis", 
-      icon: <Footprints size={36} strokeWidth={1.5} />,
-      color: "bg-purple-100" 
-    },
-  ];
-
+const PremiumCategoriesSection = () => {
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
+      },
+    },
   };
 
   const itemVariants = {
@@ -61,68 +20,132 @@ const FeaturedProducts = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
-        stiffness: 90,
-        damping: 18
-      }
-    }
+        duration: 0.5,
+      },
+    },
   };
 
+  const fadeInVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.8 } },
+  };
+
+  // Use useInView hook for each animated element
+  const headerRef = React.useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-100px" });
+
+  const gridRef = React.useRef(null);
+  const gridInView = useInView(gridRef, { once: true, margin: "-100px" });
+
+  const ctaRef = React.useRef(null);
+  const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
+
+  const categories = [
+    {
+      id: 1,
+      title: "Camisas",
+      description: "Peças respiráveis e atemporais",
+      image: "assets/img/camisa.png",
+      gradient: "from-custom-green/80 to-transparent",
+      badgeIcon: <Leaf size={12} className="mr-1" />,
+      badgeText: "Eco-Friendly",
+    },
+    {
+      id: 2,
+      title: "Calças",
+      description: "Conforto e estilo consciente",
+      image: "assets/img/calca.jpg",
+      gradient: "from-custom-earth/80 to-transparent",
+      badgeIcon: <Leaf size={12} className="mr-1" />,
+      badgeText: "Sustentável",
+    },
+    {
+      id: 3,
+      title: "Acessórios",
+      description: "Detalhes que fazem diferença",
+      image: "assets/img/acessorio.png",
+      gradient: "from-custom-olive/80 to-transparent",
+      badgeIcon: <Recycle size={12} className="mr-1" />,
+      badgeText: "Reciclado",
+    },
+    {
+      id: 4,
+      title: "Calçados",
+      description: "Passos com propósito",
+      image: "assets/img/calcado.png",
+      gradient: "from-custom-pink/50 to-transparent",
+      badgeIcon: <Globe size={12} className="mr-1" />,
+      badgeText: "Eco-Consciente",
+    },
+  ];
+
   return (
-    <motion.section
-      ref={containerRef}
-      className="bg-custom-cream py-20 px-4 md:px-8 lg:px-12 overflow-hidden"
-    >
+    <section id="products" className="bg-custom-cream py-20 px-4 md:px-8 lg:px-12 overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          ref={headerRef}
           initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          variants={containerVariants}
+          animate={headerInView ? "visible" : "hidden"}
+          variants={fadeInVariants}
+          className="text-center mb-16"
         >
-          <motion.span
-            variants={itemVariants}
-            className="inline-block px-4 py-1 mb-4 text-xs font-bold tracking-widest text-custom-green uppercase rounded-full bg-emerald-100"
-          >
+          <span className="inline-block px-4 py-1 mb-4 text-xs font-bold tracking-widest text-custom-green uppercase rounded-full bg-emerald-100">
             Coleções em destaque
-          </motion.span>
-          <motion.h2
-            variants={itemVariants}
-            className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4"
-          >
+          </span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-custom-green mb-4 font-hussar">
             Categorias que amamos 💖
-          </motion.h2>
-          <motion.p
-            variants={itemVariants}
-            className="text-gray-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
-          >
+          </h2>
+          <p className="text-gray-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
             Estilo, propósito e personalidade. Encontre peças que contam a sua história.
-          </motion.p>
+          </p>
         </motion.div>
 
-        {/* Cards */}
+        {/* Grid Cards */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          ref={gridRef}
           initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
+          animate={gridInView ? "visible" : "hidden"}
           variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
         >
-          {categories.map((cat) => (
+          {categories.map((category) => (
             <motion.a
-              key={cat.id}
-              href={`/categorias/${cat.slug}`}
-              aria-label={`Ver categoria ${cat.name}`}
-              className={`group relative ${cat.color} rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-64 flex flex-col items-center justify-center text-center`}
+              key={category.id}
               variants={itemVariants}
-              whileHover={{ y: -4, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              href={`/categorias/${category.title.toLowerCase()}`}
+              className="group relative rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl h-96"
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent z-0" />
-              <div className="relative z-10 flex flex-col items-center justify-center p-6">
-                <div className="text-gray-800 mb-4">{cat.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-800">{cat.name}</h3>
-                <span className="text-sm text-gray-800/90 mt-1">Ver mais</span>
+              {/* Background gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-t ${category.gradient} z-10`}></div>
+              
+              {/* Image - Replace with your actual image component */}
+              <div 
+                className="w-full h-full bg-gray-200 transition-transform duration-700 group-hover:scale-105"
+                style={{ 
+                  backgroundImage: `url(${category.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                {/* Placeholder for image */}
+              </div>
+              
+              {/* Content overlay */}
+              <div className="absolute bottom-0 left-0 right-0 z-20 p-6 text-center">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="text-xl font-bold text-custom-green mb-1">{category.title}</h3>
+                  <p className="text-sm text-custom-earth/80 mb-2">{category.description}</p>
+                  <span className="inline-flex items-center text-xs font-medium text-custom-pink">
+                    Explorar coleção <ArrowRight size={12} className="ml-1" />
+                  </span>
+                </div>
+              </div>
+              
+              {/* Badge */}
+              <div className="absolute top-4 right-4 z-20 bg-custom-white/90 text-custom-green text-xs font-bold px-3 py-1 rounded-full flex items-center shadow-sm">
+                {category.badgeIcon}
+                {category.badgeText}
               </div>
             </motion.a>
           ))}
@@ -130,22 +153,24 @@ const FeaturedProducts = () => {
 
         {/* CTA */}
         <motion.div
+          ref={ctaRef}
+          initial="hidden"
+          animate={ctaInView ? "visible" : "hidden"}
+          variants={fadeInVariants}
           className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5 }}
         >
-          <ActionButton
-            text="Explorar todas as categorias"
-            onClick={() => window.location.href = '/categorias'}
-            variant="solid"
-            icon="arrow"
-            className="mx-auto"
-          />
+          <a
+            href="/categorias"
+            className="inline-flex w-fit bg-custom-olive text-white font-bold py-3 px-6 rounded-full hover:bg-custom-olive/90 transition items-center gap-2 group relative"
+          >
+            <span className="relative z-10">Descubra Todas as Categorias</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-custom-olive to-custom-avocado rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
+          </a>
         </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
-export default FeaturedProducts;
+export default PremiumCategoriesSection;
