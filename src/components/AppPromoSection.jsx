@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Gift, Check, Clock } from "lucide-react";
 
+// Hook customizado para detectar quando elementos entram na viewport
 function useInView(options) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -11,11 +12,10 @@ function useInView(options) {
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        if (options?.delay) {
-          setTimeout(() => setIsVisible(true), options.delay);
-        } else {
-          setIsVisible(true);
-        }
+        // Permite atraso opcional antes de marcar como visível
+        options?.delay 
+          ? setTimeout(() => setIsVisible(true), options.delay)
+          : setIsVisible(true);
         observer.unobserve(entry.target);
       }
     }, options);
@@ -29,12 +29,14 @@ function useInView(options) {
 }
 
 export default function AppPromoSection() {
+  // Contador regressivo para a oferta
   const [timeLeft, setTimeLeft] = useState({
     hours: 48,
     minutes: 0,
     seconds: 0,
   });
 
+  // Elementos com animação de entrada controlados pelo hook useInView
   const badge = useInView({ threshold: 0.1, delay: 100 });
   const headline = useInView({ threshold: 0.1, delay: 200 });
   const description = useInView({ threshold: 0.1, delay: 300 });
@@ -43,10 +45,13 @@ export default function AppPromoSection() {
   const timer = useInView({ threshold: 0.1, delay: 600 });
   const image = useInView({ threshold: 0.1, delay: 700 });
 
+  // Atualiza o contador regressivo a cada segundo
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         let { hours, minutes, seconds } = prev;
+        
+        // Lógica para decrementar o tempo
         if (seconds > 0) seconds--;
         else if (minutes > 0) {
           minutes--;
@@ -59,6 +64,7 @@ export default function AppPromoSection() {
         return { hours, minutes, seconds };
       });
     }, 1000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -66,33 +72,24 @@ export default function AppPromoSection() {
 
   return (
     <section className="w-full relative bg-custom-white overflow-hidden">
-      {/* Background Elements */}
+      {/* Efeitos de fundo animados */}
       <div className="absolute inset-0 opacity-20">
-        <div
-          className={`absolute top-0 left-0 w-64 h-64 bg-custom-pink/10 rounded-full blur-[80px] transition-all duration-1000 ease-out ${
-            badge.isVisible ? "opacity-100" : "opacity-0"
-          }`}
-          style={{ transitionDelay: "100ms" }}
-        />
-        <div
-          className={`absolute bottom-0 right-0 w-80 h-80 bg-custom-olive/15 rounded-full blur-[80px] transition-all duration-1000 ease-out ${
-            headline.isVisible ? "opacity-100" : "opacity-0"
-          }`}
-          style={{ transitionDelay: "300ms" }}
-        />
+        <div className={`absolute top-0 left-0 w-64 h-64 bg-custom-pink/10 rounded-full blur-[80px] transition-all duration-1000 ease-out ${
+          badge.isVisible ? "opacity-100" : "opacity-0"
+        }`} />
+        <div className={`absolute bottom-0 right-0 w-80 h-80 bg-custom-olive/15 rounded-full blur-[80px] transition-all duration-1000 ease-out ${
+          headline.isVisible ? "opacity-100" : "opacity-0"
+        }`} />
       </div>
 
-      {/* Content */}
+      {/* Conteúdo principal com animações em cascata */}
       <div className="container mx-auto px-6 py-16 md:py-20 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="flex-1 max-w-2xl">
-            {/* Badge */}
-            <div
-              ref={badge.ref}
-              className={`mb-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                badge.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-            >
+            {/* Badge de oferta */}
+            <div ref={badge.ref} className={`mb-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              badge.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}>
               <span className="inline-flex items-center gap-2 bg-white/90 text-custom-green text-sm font-semibold px-4 py-2 rounded-full border border-gray-200 shadow-sm">
                 <Gift className="w-4 h-4" />
                 OFERTA POR TEMPO LIMITADO
@@ -102,13 +99,10 @@ export default function AppPromoSection() {
               </span>
             </div>
 
-            {/* Headline */}
-            <div
-              ref={headline.ref}
-              className={`mb-8 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                headline.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-            >
+            {/* Título principal */}
+            <div ref={headline.ref} className={`mb-8 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              headline.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}>
               <h2 className="text-4xl md:text-5xl font-extrabold text-custom-earth leading-tight">
                 <span className="block">Desconto especial de</span>
                 <span className="text-custom-pink text-5xl md:text-6xl inline-block">
@@ -117,23 +111,17 @@ export default function AppPromoSection() {
               </h2>
             </div>
 
-            {/* Description */}
-            <p
-              ref={description.ref}
-              className={`text-lg text-custom-earth/90 mb-8 leading-relaxed transition-all duration-700 ease-out ${
-                description.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-            >
-              <strong className="font-bold text-custom-red">Metade do preço</strong> na sua primeira compra pelo app! Aproveite esta oferta única para renovar seu guarda-roupa com nossas peças premium.
+            {/* Descrição */}
+            <p ref={description.ref} className={`text-lg text-custom-earth/90 mb-8 leading-relaxed transition-all duration-700 ease-out ${
+              description.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}>
+              <strong className="font-bold text-custom-red">Metade do preço</strong> na sua primeira compra pelo app!
             </p>
 
-            {/* Benefits */}
-            <ul
-              ref={benefits.ref}
-              className={`space-y-3 mb-10 transition-all duration-500 ease-out ${
-                benefits.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-            >
+            {/* Lista de benefícios */}
+            <ul ref={benefits.ref} className={`space-y-3 mb-10 transition-all duration-500 ease-out ${
+              benefits.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}>
               {[
                 "Oferta válida por 48h",
                 "Frete grátis no primeiro pedido",
@@ -149,13 +137,10 @@ export default function AppPromoSection() {
               ))}
             </ul>
 
-            {/* Buttons */}
-            <div
-              ref={buttons.ref}
-              className={`flex flex-row justify-center gap-4 mb-8 sm:justify-start transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                buttons.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-            >
+            {/* Botões de download */}
+            <div ref={buttons.ref} className={`flex flex-row justify-center gap-4 mb-8 sm:justify-start transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              buttons.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}>
               <a href="#" className="transition hover:opacity-90 h-[52px] flex">
                 <img src="/assets/img/download-apple.svg" alt="App Store" className="h-full w-auto object-contain" />
               </a>
@@ -164,13 +149,10 @@ export default function AppPromoSection() {
               </a>
             </div>
 
-            {/* Timer */}
-            <div
-              ref={timer.ref}
-              className={`p-4 bg-white/80 rounded-lg border border-gray-200 shadow-sm transition-all duration-700 ease-out ${
-                timer.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-            >
+            {/* Temporizador da oferta */}
+            <div ref={timer.ref} className={`p-4 bg-white/80 rounded-lg border border-gray-200 shadow-sm transition-all duration-700 ease-out ${
+              timer.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}>
               <div className="flex items-center justify-center gap-3 text-custom-earth">
                 <Clock className="w-5 h-5 text-custom-red" />
                 <span className="font-medium">Oferta termina em:</span>
@@ -181,15 +163,11 @@ export default function AppPromoSection() {
             </div>
           </div>
 
-          {/* Image */}
-          <div
-            ref={image.ref}
-            className={`flex-1 flex justify-center relative mt-10 lg:mt-0 transition-all duration-1000 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-              image.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-          >
+          {/* Imagem do mockup do app */}
+          <div ref={image.ref} className={`flex-1 flex justify-center relative mt-10 lg:mt-0 transition-all duration-1000 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+            image.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}>
             <div className="relative w-full max-w-md">
-              <div className="absolute -inset-4"></div>
               <div className="relative overflow-hidden">
                 <img src="/assets/img/mockup.png" alt="Visual do aplicativo" className="w-full h-auto" />
               </div>

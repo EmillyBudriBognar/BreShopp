@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { CheckCircle, Store, ArrowRight } from 'lucide-react';
 import ActionButton from '@/components/ActionButton';
 
+// Configurações de animação reutilizáveis
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
@@ -14,17 +15,26 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.4 },
+    transition: { 
+      staggerChildren: 0.1, // Efeito cascata nos itens
+      delayChildren: 0.4 // Delay inicial
+    },
   },
 };
 
 const SustainableRewardsSection = () => {
   const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+  // Controle de animação quando 10% do componente está visível
+  const isInView = useInView(containerRef, { 
+    once: true, 
+    amount: 0.1 
+  });
 
+  // Handlers para ações dos botões
   const handleAgendarColeta = () => console.log('Agendar coleta clicado!');
   const handleVerLojas = () => console.log('Ver lojas clicado!');
 
+  // Benefícios exibidos em lista
   const benefits = [
     '+10% a cada 3 peças',
     'Cupom válido por 60 dias',
@@ -37,7 +47,7 @@ const SustainableRewardsSection = () => {
       ref={containerRef}
       className="w-full relative bg-custom-white overflow-hidden"
     >
-      {/* Background Effects */}
+      {/* Efeitos de fundo decorativos */}
       <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
         <motion.div
           initial={{ opacity: 0 }}
@@ -53,11 +63,12 @@ const SustainableRewardsSection = () => {
         />
       </div>
 
-      {/* Content */}
+      {/* Conteúdo principal */}
       <div className="container mx-auto px-4 sm:px-6 py-16 md:py-24 lg:py-28 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 xl:gap-16">
-          {/* Text */}
+          {/* Seção de texto */}
           <div className="flex-1 max-w-2xl order-2 lg:order-1">
+            {/* Badge de destaque */}
             <motion.div
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -73,6 +84,7 @@ const SustainableRewardsSection = () => {
               </span>
             </motion.div>
 
+            {/* Título principal com gradiente */}
             <motion.h2
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -91,6 +103,7 @@ const SustainableRewardsSection = () => {
               </motion.span>
             </motion.h2>
 
+            {/* Texto descritivo */}
             <motion.p
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -102,7 +115,7 @@ const SustainableRewardsSection = () => {
               Sustentabilidade que transforma seu guarda-roupa e o planeta.
             </motion.p>
 
-            {/* Benefits */}
+            {/* Lista de benefícios em grid responsivo */}
             <motion.ul
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -121,7 +134,7 @@ const SustainableRewardsSection = () => {
               ))}
             </motion.ul>
 
-            {/* Buttons */}
+            {/* Botões de ação principal e secundária */}
             <motion.div
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -150,7 +163,7 @@ const SustainableRewardsSection = () => {
               </motion.div>
             </motion.div>
 
-            {/* Rating */}
+            {/* Elemento de confiança (avaliação) */}
             <motion.div
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
@@ -163,7 +176,7 @@ const SustainableRewardsSection = () => {
             </motion.div>
           </div>
 
-          {/* Image */}
+          {/* Seção de imagem com efeitos */}
           <motion.div
             initial="hidden"
             animate={isInView ? 'visible' : 'hidden'}
@@ -172,8 +185,10 @@ const SustainableRewardsSection = () => {
             className="flex-1 flex justify-center relative mt-10 lg:mt-0 order-1 lg:order-2"
           >
             <div className="relative w-full max-w-md xl:max-w-lg">
+              {/* Efeito de gradiente ao redor da imagem */}
               <div className="absolute -inset-4 bg-gradient-to-r from-custom-olive/20 to-custom-green/20 rounded-3xl blur-lg -z-10"></div>
 
+              {/* Container da imagem */}
               <div className="overflow-hidden rounded-2xl border-4 border-white shadow-xl relative">
                 <img
                   src="/assets/img/mocafelizcompras.jpg"
@@ -183,6 +198,7 @@ const SustainableRewardsSection = () => {
                 />
               </div>
 
+              {/* Badge animado de desconto */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
                 animate={isInView ? { opacity: 1, scale: 1, rotate: 12 } : {}}

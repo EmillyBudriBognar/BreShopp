@@ -10,6 +10,7 @@ import 'swiper/css/autoplay';
 import ActionButton from './ActionButton';
 
 const DonationCarousel = () => {
+  // Configurações de animação para entrada dos elementos
   const fadeInVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.8 } },
@@ -20,15 +21,18 @@ const DonationCarousel = () => {
     visible: { y: 0, opacity: 1, transition: { duration: 0.6 } },
   };
 
+  // Controles para animações de scroll
   const headerRef = useRef(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-100px" });
 
   const swiperRef = useRef(null);
   const swiperInView = useInView(swiperRef, { once: true, margin: "-100px" });
 
+  // Estado para controle de navegação do carrossel
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
+  // Dados das instituições que recebem doações
   const donations = [
     {
       id: 1,
@@ -98,6 +102,7 @@ const DonationCarousel = () => {
     }
   ];
 
+  // Manipulador de eventos do Swiper
   const handleSwiper = (swiper) => {
     setIsBeginning(swiper.isBeginning);
     setIsEnd(swiper.isEnd);
@@ -111,6 +116,7 @@ const DonationCarousel = () => {
   return (
     <section className="py-20 bg-custom-cream px-4 sm:px-8 lg:px-12 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
+        {/* Cabeçalho com animação de fade-in */}
         <motion.div
           ref={headerRef}
           initial="hidden"
@@ -129,6 +135,7 @@ const DonationCarousel = () => {
           </p>
         </motion.div>
 
+        {/* Carrossel com animação de slide-up */}
         <motion.div
           ref={swiperRef}
           initial="hidden"
@@ -172,6 +179,7 @@ const DonationCarousel = () => {
           >
             {donations.map((donation) => (
               <SwiperSlide key={donation.id}>
+                {/* Card de doação com efeito hover */}
                 <motion.div 
                   whileHover={{ y: -8 }}
                   transition={{ type: 'spring', stiffness: 300 }}
@@ -207,6 +215,7 @@ const DonationCarousel = () => {
                     </div>
                   </div>
 
+                  {/* Botão de ação */}
                   <div className="pt-4 mt-4 border-t border-custom-cream">
                     <ActionButton 
                       text="Quero Doar"
@@ -221,10 +230,9 @@ const DonationCarousel = () => {
             ))}
           </Swiper>
 
-          {/* Custom pagination */}
+          {/* Navegação customizada do carrossel */}
           <div className="donation-pagination text-center mt-6" />
 
-          {/* Custom navigation buttons */}
           <button 
             className={`donation-next absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-custom-pink hover:bg-custom-pink hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 ${isEnd ? 'opacity-20 cursor-not-allowed' : ''}`}
             aria-label="Próximo slide"

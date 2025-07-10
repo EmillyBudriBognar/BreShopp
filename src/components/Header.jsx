@@ -9,19 +9,17 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isVisible, setIsVisible] = useState(true)
-  
 
   const searchRef = useRef(null)
   const menuRef = useRef(null)
-  
-
   const menuItemRefs = useRef(menuItems.map(() => React.createRef()))
-  const inViews = menuItems.map((_, i) => useInView(menuItemRefs.current[i], { once: true, margin: "-20px" }))
-
-
+  
+  const inViews = menuItems.map((_, i) => 
+    useInView(menuItemRefs.current[i], { once: true, margin: "-20px" }))
+  
+  // Efeito para fechar menus ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
-    
       if (isSearchOpen && searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearchOpen(false)
       }
@@ -35,13 +33,11 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isSearchOpen, isMenuOpen])
 
+  // Efeito para esconder header no scroll (exceto quando search aberto)
   useEffect(() => {
     let lastScroll = 0
     const handleScroll = () => {
-      if (isSearchOpen) {
-        setIsVisible(true)
-        return
-      }
+      if (isSearchOpen) return // Mantém visível se search aberto
 
       const currentScroll = window.scrollY
       setIsVisible(currentScroll <= 100 || currentScroll < lastScroll)
@@ -52,11 +48,13 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isSearchOpen])
 
+  // Efeito para bloquear scroll quando menu mobile aberto
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto'
     return () => document.body.style.overflow = 'auto'
   }, [isMenuOpen])
 
+  // Manipuladores de eventos
   const handleSearch = (e) => {
     e.preventDefault()
     if (searchQuery.trim()) {
@@ -77,11 +75,14 @@ const Header = () => {
   }
 
   const goToSection = (section) => {
-    const element = document.getElementById(section === 'Home' ? 'hero-section' : `${section.toLowerCase()}-section`)
+    const element = document.getElementById(
+      section === 'Home' ? 'hero-section' : `${section.toLowerCase()}-section`
+    )
     if (element) element.scrollIntoView({ behavior: 'smooth' })
     setIsMenuOpen(false)
   }
 
+  // Variantes de animação
   const textVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: {
@@ -102,7 +103,7 @@ const Header = () => {
 
   return (
     <div className="relative">
-      {/* Fixed Header */}
+      {/* Header principal fixo */}
       <motion.header
         layout
         animate={{ y: isVisible ? 0 : -100 }}
@@ -110,15 +111,20 @@ const Header = () => {
         className="bg-custom-cream text-custom-green shadow-md fixed top-0 left-0 right-0 z-50"
       >
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo - clickable */}
+          {/* Logo */}
           <div 
             onClick={() => goToSection('Home')} 
             className="text-2xl font-bold cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Ir para página inicial"
           >
-            <img src="/assets/logo/logotipo-original.svg" alt="BreShopp" className="h-10 object-contain" />
+            <img 
+              src="/assets/logo/logotipo-original.svg" 
+              alt="BreShopp" 
+              className="h-10 object-contain" 
+            />
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Navegação desktop */}
           <nav className="hidden md:flex space-x-8 items-center">
             {menuItems.map((item, index) => (
               <motion.div
@@ -131,6 +137,7 @@ const Header = () => {
                 <button
                   onClick={() => goToSection(item)}
                   className="hover:text-custom-olive transition cursor-pointer py-1 px-2 rounded hover:bg-custom-olive/10"
+                  aria-label={`Ir para ${item}`}
                 >
                   {item}
                 </button>
@@ -138,7 +145,7 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Header Actions */}
+          {/* Ícones de ação */}
           <div className="flex items-center space-x-2">
             <button
               onClick={toggleSearch}
@@ -150,35 +157,34 @@ const Header = () => {
 
             <button 
               className="p-2 rounded-full hover:bg-custom-olive/10 cursor-pointer transition-colors" 
-              aria-label="Carrinho"
+              aria-label="Carrinho de compras"
             >
               <ShoppingCart size={20} />
             </button>
 
             <button 
               className="p-2 rounded-full hover:bg-custom-olive/10 cursor-pointer transition-colors" 
-              aria-label="Perfil"
+              aria-label="Perfil do usuário"
             >
               <User size={20} />
             </button>
 
-            {/* Mobile Menu Button */}
+            {/* Botão do menu mobile */}
             <button
               onClick={toggleMenu}
               className="md:hidden p-2 rounded-full hover:bg-custom-olive/10 cursor-pointer transition-colors"
-              aria-label="Menu"
+              aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Menu mobile com animação */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               ref={menuRef}
-              id="mobile-menu"
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
@@ -196,6 +202,7 @@ const Header = () => {
                     <button
                       onClick={() => goToSection(item)}
                       className="hover:text-custom-olive transition cursor-pointer py-3 px-4 text-left rounded-lg hover:bg-custom-olive/10 w-full"
+                      aria-label={`Ir para ${item}`}
                     >
                       {item}
                     </button>
@@ -206,12 +213,11 @@ const Header = () => {
           )}
         </AnimatePresence>
 
-        {/* Search Bar */}
+        {/* Barra de pesquisa com animação */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div
               ref={searchRef}
-              id="search-bar"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -227,10 +233,12 @@ const Header = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoFocus
+                    aria-label="Campo de pesquisa"
                   />
                   <button
                     type="submit"
                     className="bg-custom-green text-white px-4 py-2 rounded-r-lg hover:bg-custom-olive transition cursor-pointer"
+                    aria-label="Buscar"
                   >
                     Buscar
                   </button>
@@ -238,6 +246,7 @@ const Header = () => {
                 <button
                   onClick={toggleSearch}
                   className="ml-4 p-2 text-custom-green hover:text-custom-olive transition cursor-pointer"
+                  aria-label="Fechar pesquisa"
                 >
                   <X size={24} />
                 </button>
@@ -247,10 +256,10 @@ const Header = () => {
         </AnimatePresence>
       </motion.header>
 
-      {/* Header spacer */}
+      {/* Espaçamento para compensar header fixo */}
       <div className="h-[65px]" />
 
-      {/* Mobile Menu Overlay */}
+      {/* Overlay do menu mobile */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -258,7 +267,8 @@ const Header = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={toggleMenu}
+            aria-hidden="true"
           />
         )}
       </AnimatePresence>

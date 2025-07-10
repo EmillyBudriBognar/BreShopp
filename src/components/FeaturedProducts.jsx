@@ -3,14 +3,12 @@ import { motion, useInView } from 'framer-motion';
 import { Leaf, ArrowRight, Recycle, Globe } from 'lucide-react';
 
 const PremiumCategoriesSection = () => {
-  // Animation variants
+  // Configurações de animação
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 }, // Efeito cascata nos itens
     },
   };
 
@@ -19,9 +17,7 @@ const PremiumCategoriesSection = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
+      transition: { duration: 0.5 },
     },
   };
 
@@ -30,7 +26,7 @@ const PremiumCategoriesSection = () => {
     visible: { opacity: 1, transition: { duration: 0.8 } },
   };
 
-  // Use useInView hook for each animated element
+  // Controles de animação baseados no scroll
   const headerRef = React.useRef(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-100px" });
 
@@ -40,6 +36,7 @@ const PremiumCategoriesSection = () => {
   const ctaRef = React.useRef(null);
   const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
 
+  // Dados das categorias
   const categories = [
     {
       id: 1,
@@ -82,7 +79,7 @@ const PremiumCategoriesSection = () => {
   return (
     <section id="products" className="bg-custom-cream py-20 px-4 md:px-8 lg:px-12 overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Cabeçalho com animação de fade-in */}
         <motion.div
           ref={headerRef}
           initial="hidden"
@@ -101,7 +98,7 @@ const PremiumCategoriesSection = () => {
           </p>
         </motion.div>
 
-        {/* Grid Cards */}
+        {/* Grid de categorias com animação em cascata */}
         <motion.div
           ref={gridRef}
           initial="hidden"
@@ -116,10 +113,10 @@ const PremiumCategoriesSection = () => {
               href={`/categorias/${category.title.toLowerCase()}`}
               className="group relative rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl h-96"
             >
-              {/* Background gradient */}
+              {/* Efeito de gradiente sobre a imagem */}
               <div className={`absolute inset-0 bg-gradient-to-t ${category.gradient} z-10`}></div>
               
-              {/* Image - Replace with your actual image component */}
+              {/* Imagem de fundo com efeito hover */}
               <div 
                 className="w-full h-full bg-gray-200 transition-transform duration-700 group-hover:scale-105"
                 style={{ 
@@ -127,11 +124,9 @@ const PremiumCategoriesSection = () => {
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
-              >
-                {/* Placeholder for image */}
-              </div>
+              />
               
-              {/* Content overlay */}
+              {/* Conteúdo flutuante com animação */}
               <div className="absolute bottom-0 left-0 right-0 z-20 p-6 text-center">
                 <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                   <h3 className="text-xl font-bold text-custom-green mb-1">{category.title}</h3>
@@ -142,7 +137,7 @@ const PremiumCategoriesSection = () => {
                 </div>
               </div>
               
-              {/* Badge */}
+              {/* Badge de destaque */}
               <div className="absolute top-4 right-4 z-20 bg-custom-white/90 text-custom-green text-xs font-bold px-3 py-1 rounded-full flex items-center shadow-sm">
                 {category.badgeIcon}
                 {category.badgeText}
@@ -151,7 +146,7 @@ const PremiumCategoriesSection = () => {
           ))}
         </motion.div>
 
-        {/* CTA */}
+        {/* CTA com efeitos hover */}
         <motion.div
           ref={ctaRef}
           initial="hidden"

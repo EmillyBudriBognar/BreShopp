@@ -2,9 +2,14 @@ import React from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const Footer = () => {
+  // Referência e controle de animação ao entrar na viewport
   const containerRef = React.useRef(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
 
+  // Obter o ano atual dinamicamente
+  const currentYear = new Date().getFullYear();
+
+  // Estrutura das colunas do footer
   const columns = [
     {
       title: null,
@@ -35,13 +40,14 @@ const Footer = () => {
     }
   ];
 
+  // Configuração de animação para as colunas
   const columnVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: i => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.1,
+        delay: i * 0.1, // Delay progressivo baseado no índice
         duration: 0.6,
         ease: 'easeOut'
       }
@@ -57,6 +63,7 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl">
         <h2 id="footer-heading" className="sr-only">Rodapé</h2>
 
+        {/* Grid de colunas responsivo */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {columns.map((column, index) => (
             <motion.div
@@ -93,6 +100,7 @@ const Footer = () => {
           ))}
         </div>
 
+        {/* Rodapé inferior com ano dinâmico */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -100,7 +108,7 @@ const Footer = () => {
           className="border-t border-custom-olive/30 mt-12 pt-8 text-center"
         >
           <p className="text-sm md:text-base text-white/80">
-            © 2025 BreShopp. Todos os direitos reservados.
+            © {currentYear} BreShopp. Todos os direitos reservados.
           </p>
           <p className="mt-2 text-xs md:text-sm text-white/60">
             Site desenvolvido com ♥ para um futuro mais sustentável
